@@ -1,0 +1,95 @@
+@import url("https://fonts.googleapis.com/css2?family=Oswald&family=PT+Sans+Narrow&display=swap");
+
+/* Poppins Regular */
+@font-face {
+  font-family: "poppinsregular";
+  src: url("./fonts/poppins-regular.woff2") format("woff2"),
+    url("./fonts/poppins-regular.woff2") format("woff");
+  font-weight: normal; /* Regular */
+  font-style: normal;
+}
+
+/* Poppins Medium */
+@font-face {
+  font-family: "poppinsmedium";
+  src: url("./fonts/poppins-medium.woff2") format("woff2"),
+    url("./fonts/poppins-medium.woff") format("woff");
+  font-weight: normal; /* SemiBold */
+  font-style: normal;
+}
+
+/* Poppins SemiBold */
+@font-face {
+  font-family: "poppinssemibold";
+  src: url("./fonts/poppins-semibold.woff2") format("woff2"),
+    url("./fonts/poppins-semibold.woff") format("woff");
+  font-weight: normal; /* SemiBold */
+  font-style: normal;
+}
+
+/* Poppins Bold */
+@font-face {
+  font-family: "poppinsbold";
+  src: url("./fonts/poppins-bold.woff2") format("woff2"),
+    url("./fonts/poppins-bold.woff") format("woff");
+  font-weight: normal; /* Bold */
+  font-style: normal;
+}
+
+html body {
+  font-family: "poppinsregular", sans-serif !important;
+  font-weight: 400 !important;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow: hidden;
+  overflow-x: hidden !important;
+  background: #fff !important;
+}
+
+#launcher-frame {
+  left : -97px !important;
+  
+}
+
+* {
+  font-family: "poppinsregular", sans-serif !important;
+}
+
+:where(.css-dev-only-do-not-override-15rg2km)[class^="ant-layout"],
+:where(.css-dev-only-do-not-override-15rg2km)[class*=" ant-layout"] {
+  font-family: "poppinsregular", sans-serif !important;
+}
+
+.header {
+  background: #fff;
+}
+
+.photo-viewer-container {
+  width: 691px !important;
+  height: 450px !important;
+}
+
+.photo {
+  width: 380px !important;
+  height: 450px !important;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  height: 8px; /* Adjust the height as needed */
+  width: 10px;
+  background-color: white;
+}
+
+/* Scrollbar thumb */
+::-webkit-scrollbar-thumb {
+  border-radius: 10px;
+  background-color: grey;
+}
+.ant-input-affix-wrapper-disabled .ant-input[disabled]{
+  color: black;
+}
+
+.ant-message {
+  z-index: 1400 !important;
+}

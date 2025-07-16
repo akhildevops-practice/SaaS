@@ -1,0 +1,91 @@
+.ant-input-disabled,
+.ant-input[disabled] {
+  color: rgba(0, 0, 0, 0.25);
+  background-color: #fff !important;
+  border-color: #d9d9d9;
+  box-shadow: none;
+  cursor: not-allowed;
+  opacity: 1;
+  color: black;
+}
+
+.ant-select-multiple.ant-select-lg
+  .ant-select-selection-item-content {
+  display: inline-block;
+  margin-inline-end: 4px;
+  overflow: hidden;
+  white-space: pre;
+  text-overflow: ellipsis;
+  color: black;
+}
+.MuiInputBase-root.Mui-disabled{
+  background: #fff !important;
+}
+.ant-input-affix-wrapper-disabled{
+  background: #fff !important;
+}
+.ant-select-disabled .ant-select-selector {
+  background: #fff !important; /* your custom background */
+  cursor: not-allowed !important;
+  color :black !important;
+}
+
+.css-19qh8xo-MuiInputBase-input-MuiOutlinedInput-input.Mui-disabled {
+    opacity: 1 !important;
+    -webkit-text-fill-color: initial !important;
+  }
+  
+  .MuiInputBase-input-MuiOutlinedInput-input.Mui-disabled {
+    opacity: 1 !important;
+    -webkit-text-fill-color: initial !important;
+  }
+  .css-1h51icj-MuiAutocomplete-root
+    .MuiOutlinedInput-root.MuiInputBase-sizeSmall
+    .MuiAutocomplete-input {
+    color: black;
+  }
+  .ant-checkbox-disabled
+    .ant-checkbox-inner:after {
+    border-color: black;
+  }
+  
+  .ant-radio-wrapper
+    .ant-radio-disabled.ant-radio-checked
+    .ant-radio-inner::after {
+    transform: scale(0.5);
+    background-color: black;
+  }
+  .MuiInputBase-input.Mui-disabled {
+    /* opacity: 1; */
+    color: black;
+  }
+  
+  .ant-checkbox-disabled + span {
+    color: black;
+  }
+  .ant-radio-wrapper-disabled {
+    cursor: not-allowed;
+    color: black;
+  }
+  .ant-select-multiple
+    .ant-select-selection-item-content {
+    display: inline-block;
+    margin-inline-end: 4px;
+    overflow: hidden;
+    white-space: pre;
+    text-overflow: ellipsis;
+    color: black;
+  }
+  .css-6od3lo-MuiChip-label {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    padding-left: 12px;
+    padding-right: 12px;
+    white-space: nowrap;
+    color: black;
+  }
+  .css-1mywu95-MuiButtonBase-root-MuiChip-root.Mui-disabled {
+    opacity: 0;
+    pointer-events: none;
+    color: black;
+  }

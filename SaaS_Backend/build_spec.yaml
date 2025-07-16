@@ -1,0 +1,117 @@
+version: 0.1
+component: build
+timeoutInSeconds: 6000
+runAs: root
+failImmediatelyOnError: true
+env:
+  variables: 
+    ARTIFACT_FILE_NAME: "backend.tar.gz"
+  vaultVariables:
+    MongoDB_URL_Vault: ocid1.vaultsecret.oc1.ap-hyderabad-1.amaaaaaasds5geyakwkd4c3jw45qfn3y4wc32c4yor44w26fc27wchykphrq
+    ARTIFACT_REPO_OCID_FromVault: ocid1.vaultsecret.oc1.ap-hyderabad-1.amaaaaaasds5geyam5xga366fcna52i65msg2252bepizaol4affzcytlyrq
+    MySQL_URL_VAULT: ocid1.vaultsecret.oc1.ap-hyderabad-1.amaaaaaasds5geyap4zo4tcckmsjzpbk7zynfsvry53nlcxplqdokkiaqufa
+    
+  exportedVariables:
+    - MongoDB_URI
+    - build_version
+    - ARTIFACT_NAME
+    - ARTIFACT_REPO_OCID
+    - MySQL_URI
+
+steps: 
+  - type: Command
+# This Step generated Build ID and Assign value to the variables {MongoDB, MySQL, Artifact Name and Artifact Repo OCID}
+    name: "Export Variables"
+    command: |
+      buildId=`echo ${OCI_BUILD_RUN_ID} | tail -c 7`
+      build_version=${buildId}
+      export build_version
+
+      MongoDB_URI=${MongoDB_URL_Vault}
+      export MongoDB_URI
+
+      MySQL_URI=${MySQL_URL_VAULT}
+      export MySQL_URI
+
+      ARTIFACT_NAME=${ARTIFACT_FILE_NAME}
+      export ARTIFACT_NAME
+
+      ARTIFACT_REPO_OCID=${ARTIFACT_REPO_OCID_FromVault}
+      export ARTIFACT_REPO_OCID
+      
+
+  - type: Command
+    name: "Create Environment File"
+    command: |
+      url=${protocol}://${domain}
+
+      sed -i "s|^KEYCLOAK_API=.*|KEYCLOAK_API=${url}|" ${OCI_PRIMARY_SOURCE_DIR}/.env
+
+      sed -i "s|^REDIRECT=.*|REDIRECT=${domain}|" ${OCI_PRIMARY_SOURCE_DIR}/.env
+
+      sed -i "s|^SERVER_IP=.*|SERVER_IP=\"${url}\"|" ${OCI_PRIMARY_SOURCE_DIR}/.env
+
+      sed -i "s|^PROTOCOL=.*|PROTOCOL=${protocol}|" ${OCI_PRIMARY_SOURCE_DIR}/.env
+
+      ESCAPED_MONGO_URI=$(echo "${MongoDB_URI}" | sed 's/[\/&]/\\&/g')
+
+      sed -i "s|^MONGO_DB_URI=.*|MONGO_DB_URI=\"${ESCAPED_MONGO_URI}\"|" ${OCI_PRIMARY_SOURCE_DIR}/.env
+      
+      sed -i "s|^MONGO_DB_URI1=.*|MONGO_DB_URI1=\'${ESCAPED_MONGO_URI}\'|" ${OCI_PRIMARY_SOURCE_DIR}/.env
+
+      sed -i "s|^MYSQL=.*|MYSQL=\'${MySQL_URI}\'|" ${OCI_PRIMARY_SOURCE_DIR}/.env
+
+      sed -i "s|^IS_OBJECT_STORE =.*|IS_OBJECT_STORE =\"true\"|" ${OCI_PRIMARY_SOURCE_DIR}/.env
+
+      cat ${OCI_PRIMARY_SOURCE_DIR}/.env
+
+      
+  - type: Command
+    name: "Install dependencies, build and create artifact"
+  #  timeoutInSeconds: 1200
+    command: |
+      # Use this part only when application has llama index package dependecy
+
+      mkdir -p /root/.npm/_libvips                   
+      chmod -R 777 /root/.npm                             
+      chown -R root:root ${OCI_PRIMARY_SOURCE_DIR}
+      chmod -R 777 ${OCI_PRIMARY_SOURCE_DIR}
+
+      # End of llama Index dependecy 
+      
+      cd ${OCI_PRIMARY_SOURCE_DIR}
+      echo "Installing node_modules"
+      npm install
+      rm -rf prisma/generated || true
+      npx prisma generate --schema prisma/schema.prisma
+      npx prisma generate --schema prisma/schema2.prisma
+      npm run build
+      cp -r ${OCI_PRIMARY_SOURCE_DIR}/prisma/generated ${OCI_PRIMARY_SOURCE_DIR}/dist/prisma/
+      echo "Build Complete"
+
+  - type: Command
+    name: "Create Backend tar.gz File"
+    timeoutInSeconds: 300
+    command: |
+      cd ${OCI_PRIMARY_SOURCE_DIR}
+      tar czf backend.tar.gz dist/ node_modules/ .env 
+      echo "tar.gz file complete"
+
+  # Use this CLI option only if delivering artifact using output artifact fails. 
+  - type: Command
+    name: "Deliver Artifact to Artifact registry"
+    timeoutInSeconds: 300
+    command: |
+      oci artifacts generic artifact upload-by-path \
+      --repository-id ${ARTIFACT_REPO_OCID} \
+      --artifact-path ${ARTIFACT_NAME} \
+      --artifact-version ${build_version} \
+      --content-body backend.tar.gz
+
+outputArtifacts:
+  # - name: backend
+  #   type: BINARY
+  #   location: backend.tar.gz
+  - name: instance_group_deployment_spec
+    type: BINARY
+    location: instance_deployment_spec.yaml

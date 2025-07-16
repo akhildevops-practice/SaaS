@@ -1,0 +1,85 @@
+def url
+def remote_host_ip
+def remote_path
+def remote_host
+def credentials_id
+def user
+def password
+
+pipeline { 
+    agent any
+
+    environment {
+        ENV = 'Development'
+    }
+
+    /*parameters {
+        choice(name: 'env', choices: ['Development'], description: 'Select the environment to deploy')
+        //choice(name: 'branch', choices: ['main', 'develop', 'feature-branch'], description: 'Select the branch to deploy')
+    }*/
+
+    stages {
+        stage('Reading & Changing Envrionment Varialbes of .env.development') {
+            steps {
+                script {
+
+                echo "Reading Environment Variables from env-config file"
+
+                    def envConfig = readJSON file: "${WORKSPACE}/env-config.json"
+                    url = envConfig[ENV]['url']
+                    remote_path = envConfig[ENV]['remote_path']
+                    remote_host_ip = envConfig[ENV]['remote_host_ip']
+                    remote_host = envConfig[ENV]['remote_host']
+                    credentials_id = envConfig[ENV]['credentials_id'] 
+
+                    //Assiging UserName and Password of Remote Host to Variable
+                    withCredentials([usernamePassword(credentialsId: "${credentials_id}", usernameVariable: 'remote_user', passwordVariable: 'remote_password')]) {
+                        user = "${remote_user}"
+                        password = "${remote_password}"
+                        echo "Passing the username and password" 
+                    }
+                }
+
+                echo "Started Assigning Environment Variables to .env.development"
+                script {
+                    def fileContent = readFile("${WORKSPACE}/.env.development")
+                    fileContent = fileContent.replace('localhost', "prodlecloud.com")
+                    fileContent = fileContent.replace('http://', "https://")
+                    fileContent = fileContent.replaceAll(/:\d+/, '')
+                    fileContent = fileContent.replaceAll(/REACT_APP_IS_ACEOFFIX=.*/,"REACT_APP_IS_ACEOFFIX=true")
+                    fileContent = fileContent.replaceAll(/REACT_APP_IS_OBJECT_STORAGE=.*/,"REACT_APP_IS_OBJECT_STORAGE=false")
+                    writeFile file: "${WORKSPACE}/.env.development", text: fileContent
+                }
+                echo "Performing Aceoffix Changes"
+                sh """
+                  sed -i 's|<!-- .*<script type="text/javascript" src="https://hilimsdev.adityabirla.com/aceoffix.js" id="ace_js_main"></script>.* -->|<script type="text/javascript" src="https://pharmaco.prodlecloud.com/aceoffix.js" id="ace_js_main"></script>|g' ${WORKSPACE}/public/index.html
+                """
+
+                
+            }
+        }
+
+        stage('Copying to specified path') {
+            steps {
+                script {
+                    def remote = [:]
+                    remote.name = "${remote_host}"
+                    remote.host = "${remote_host_ip}"
+                    remote.allowAnyHosts = true
+                    remote.user = "${user}"
+                    remote.password = "${password}"
+                    sshCommand remote: remote, command: "pm2 delete frontend || true && rm -rf ${remote_path}/SaaS_Frontend || true"
+                    sshCommand remote: remote, command: "mkdir -p ${remote_path} || true"
+                    sshPut remote: remote, from: "${WORKSPACE}", into: "${remote_path}"
+                    sshCommand remote: remote, command: "cd ${remote_path}/SaaS_Frontend && npm install -f && pm2 start --name frontend npm -- start"
+                }
+            }
+        }
+    }
+
+post {
+        always {
+            cleanWs()
+        }
+    }
+}

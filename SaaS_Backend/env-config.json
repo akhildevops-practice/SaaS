@@ -1,0 +1,9 @@
+{
+  "Development": {
+    "url": "prodlecloud.com",
+    "remote_path": "/home/pcloud/prodle",
+    "remote_host_ip": "140.0.1.26",
+    "remote_host": "demoserver",
+    "credentials_id": "prodlecloud"
+  }
+}

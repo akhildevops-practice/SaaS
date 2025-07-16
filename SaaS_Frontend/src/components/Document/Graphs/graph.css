@@ -1,0 +1,24 @@
+.piegraph {
+  width: 250px !important;
+  height: 240px !important;
+  /* padding: 8px; */
+  margin: auto;
+  position: relative;
+  bottom: 28px;
+  /* left: 60px; */
+}
+.systemgraph {
+  width: 250px !important;
+  height: 228px !important;
+  /* padding: 8px; */
+  margin: auto;
+  position: relative;
+  bottom: 22px;
+  /* left: 60px; */
+}
+
+.bargraph {
+  height: 210px !important;
+  width: 300px !important;
+  margin: auto;
+}

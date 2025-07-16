@@ -1,0 +1,102 @@
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "rhel-openssl-1.0.x", "rhel-openssl-1.1.x"]
+  output        = "./generated/client2"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("MYSQL")
+}
+
+// Define the MonthYear scalar type resolver
+
+// Define the schema with the custom scalar type resolver
+model UserTest {
+  id             String   @id
+  kcId           String?
+  email          String?
+  username       String?
+  firstname      String?
+  lastname       String?
+  createdAt      DateTime @default(now())
+  createdBy      String?
+  updatedAt      DateTime @updatedAt
+  updatedBy      String?
+  enabled        Boolean?
+  organizationId String?
+  locationId     String?
+  entityId       String?
+  userType       String?
+  status         Boolean?
+  avatar         String?
+  deleted        Boolean? @default(false)
+}
+
+model reportKpiDataNewData {
+  id                String  @id @default(uuid())
+  kpiTemplateId     String
+  kpiCategoryId     String
+  kpiReportId       String
+  kpiId             String
+  kraId             String?
+  kpiLocation       String?
+  kpiOrganization   String?
+  kpiEntity         String?
+  kpibusiness       String?
+  kpiValue          Float
+  kpiComments       String?
+  kpiTargetType     String?
+  minimumTarget     Float?
+  target            Float?
+  operationalTarget Float?
+  kpiWeightage      Float?
+  kpiScore          Float?
+  kpiVariance       Float?
+  percentage        Float?
+
+  kpiStatus   String?
+  objectiveId Json?
+  reportDate  DateTime @default(now())
+  reportFor   DateTime @default(now())
+  reportYear  String?
+}
+
+model kpiSummary {
+  id                       String  @unique @default(uuid())
+  kpiId                    String
+  kraId                    String?
+  objectiveId              Json?
+  kpiEntity                String?
+  kpibusiness              String?
+  kpiLocation              String?
+  kpiOrganization          String?
+  kpiMonthYear             Int?
+  monthlySum               Float?
+  monthlyAverage           Float?
+  monthlyVariance          Float?
+  monthlyTarget            Float?
+  monthlyMinimumTarget     Float?
+  monthlyOperationalTarget Float?
+  monthlyWeightedScore     Float?
+  percentage               Float?
+  kpiComments              String?
+  //Status String?
+  count                    Int     @default(0)
+  kpiYear                  Int?
+  kpiPeriod                Int?
+  kpiSemiAnnual            Int?
+}
+
+model test {
+  id   String @id
+  name String
+}
+
+// model UserRole {
+//   id     String  @id @default(cuid()) @map("_id")
+//   userId String?
+//   roleId String?
+//   role   Role?   @relation(fields: [roleId], references: [id])
+//   user   User?   @relation(fields: [userId], references: [id])
+// }

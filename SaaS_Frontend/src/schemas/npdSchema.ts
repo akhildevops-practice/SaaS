@@ -1,0 +1,48 @@
+export const npdForm: any = {
+  projectType: "",
+  projectTypeData: {},
+  projectName: "",
+  customer: [],
+  supplier: [],
+  sopDate: "",
+  sopQuantity: "",
+  escNumber: "",
+  escRank: "",
+  justification: "",
+  meetingDate: "",
+  partDetails: [
+    {
+      model: "",
+      partName: "",
+      densoPartNo: "",
+      customer: "",
+      date: "",
+      orderNo: "",
+      qty: "",
+      remarks: "",
+      productType: "",
+    },
+  ],
+  departmentData: [
+    {
+      id: "66cc61a60d82c135b28021996",
+      category: "",
+      stakeHolderName: "",
+      stakeHolderId: "66cc61a60d82c135b7cRealm",
+      departments: [
+        {
+          id: "cls9wubp10000ro7k567p4nm1",
+          department: "",
+          pic: [],
+          npdConfigId: "",
+        },
+      ],
+      isSelected: false,
+    },
+  ],
+  attachFiles: [{ key: Date.now(), name: "", files: [] }],
+  createdBy: "",
+  updatedBy: "",
+  isDraft: true,
+  status: "",
+};

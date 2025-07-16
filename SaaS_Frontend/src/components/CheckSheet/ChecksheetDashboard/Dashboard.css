@@ -1,0 +1,11 @@
+.filterSelector.ant-select-single .ant-select-selector {
+    border-radius: 0px !important;
+    height: 30px !important;
+    background-color: #fdfefe !important;
+    border: 1px solid #defbfb !important;
+  }
+.filterSelector.ant-select-selector{
+    height: 30px !important;
+    background-color: #fdfefe !important;
+    border: 1px solid #defbfb !important;
+}

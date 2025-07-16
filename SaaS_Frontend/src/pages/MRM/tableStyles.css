@@ -1,0 +1,8 @@
+.MuiTableCell-body{
+  padding : 4px 15px !important;
+}
+
+.custom-dropdown {
+  max-height: 180px;
+  overflow-y: auto;
+}

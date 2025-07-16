@@ -1,0 +1,172 @@
+
+.e-icons {
+    font-family: 'e-icons' !important; 
+    font-size: inherit; 
+}
+
+/* #Overview .e-gantt-child-taskbar,
+#Overview .e-gantt-parent-taskbar {
+    border-radius: 10px;
+} */
+
+.custom-font-size .e-headercell, 
+.custom-font-size .e-rowcell {
+  font-size: 12px; 
+}
+
+.e-grid .e-rowcell {
+    font-size: 12px;
+}
+
+.e-treegrid .e-rowcell:not(.e-gridclip) .e-treecolumn-container {
+    display: flex;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    align-items: center;
+}
+
+tr.e-row{
+    height: 40px !important;
+    /* border: 1px solid #abebc6 !important;    */
+}
+
+
+.e-taskbar-main-container {
+    margin-top: 0px !important;
+}
+.e-chart-row { 
+    /* border: 1px solid #abebc6 !important; */
+    /* padding: 5px; */
+    height: 40px !important;
+   } 
+/* .e-gantt-splitter .e-control .e-splitter .e-lib .e-splitter-horizontal{
+  padding-bottom: 10px !important;
+} */
+
+/* .e-chart-row::before {
+    content: 'Plan  Actual';
+    display: block;
+    background-color: #e8f8f5;
+    border: 1px solid #abebc6 !important;
+    color: #010457;
+    display: block;
+    font-size: 10px;
+  } */
+/* .e-icons .e-treegridexpand::before{
+    content: '../../../assets/icons/add.svg';
+} */
+  .custom-icons {
+    display: none;
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 1000;
+}
+
+.selected .custom-icons {
+    display: flex;
+    gap: 10px;
+}
+
+.icon {
+    cursor: pointer;
+    font-size: 16px;
+    color: #333;
+}
+/* .e-timeline-header-container{
+ padding-left: 38px;   
+}
+.e-chart-root-container{
+    margin-right: 38px;
+    margin-right: 0px
+} */
+ .span-taskName-bar-div-npd{
+    display: flex;
+    justify-content: space-between; 
+    align-items: center;
+    width: 200px;
+ }
+.span-taskName-bar-div{
+   display: flex;
+   justify-content: space-between; 
+   align-items: center;
+   width: auto;
+}
+
+.icon-container {
+    display: none;
+    margin-left: 10px;
+  }
+  
+  .span-taskName-bar-div:hover .icon-container {
+    display: flex;
+    justify-content: space-between; 
+    align-items: center;
+  }
+  
+ .e-gantt .e-gantt-chart .e-baseline-bar {
+    border-radius: 3px;
+    /* height: 14px !important;
+    margin-top: -17px !important; */
+}
+/* .e-chart-row-cell {
+  padding-top: 2px !important;
+  padding-bottom: 2px !important;
+} */
+ .e-baseline-bar {
+    position: relative;
+    width: 100%;
+    height: 12px !important;
+    background-color: #ddd;
+    border-radius: 4px;
+    overflow: hidden;
+    margin-top: -13px !important;
+  }
+
+  .e-baseline-bar .baseline-progress {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    background-color: #82e0aa;
+    z-index: 1;
+    border-radius: 4px;
+  }
+  
+  .e-baseline-bar .baseline-progress .progress-label {
+    position: absolute;
+    width: 100%;
+    text-align: center;
+    color: white; 
+    line-height: 12px; 
+    z-index: 2;
+  } 
+
+.e-gantt .e-gantt-chart .e-gantt-child-taskbar-inner-div{
+ background-color: #0263f5 !important;
+ height: 14px !important;
+}
+.e-gantt .e-gantt-chart .e-gantt-parent-progressbar-inner-div{
+background-color: #adb5bd;
+height: 14px !important;
+}
+.e-gantt .e-gantt-chart .e-gantt-parent-taskbar-inner-div{
+    background-color: #ddd;
+    height: 14px !important;
+}
+
+.e-spinner-pane .e-spinner-inner .e-spin-material3{
+  stroke: orange !important;
+  height: 50px !important;
+  width: 60px !important;
+}
+
+.e-chart-scroll-container.e-content::-webkit-scrollbar{
+  width: 10px !important;
+  height: 10px !important;
+}
+.e-gantt .e-gantt-chart .e-chart-scroll-container::-webkit-scrollbar{
+  width: 10px !important;
+  height: 10px !important;
+}

@@ -1,0 +1,42 @@
+[
+  {
+    "catId": "34jr2034fc",
+    "catName": "cat1",
+    "catData": [
+      {
+        "kpi": { "value": "34v5nu34v5", "label": "kpi1" },
+        "description": "desc",
+        "uom": "seconds",
+        "value": "",
+        "comments": "",
+        "target": "90",
+        "minimumTarget": "80",
+        "weightage": "10",
+        "variance": "",
+        "score": "",
+        "monthlyAvg": "",
+        "annualAvg": "",
+        "mtd": "",
+        "ytd": "",
+        "ratio": ""
+      },
+      {
+        "kpi": { "value": "234923v", "label": "kpi2" },
+        "description": "description",
+        "uom": "kg",
+        "value": "",
+        "comments": "",
+        "target": "90",
+        "minimumTarget": "",
+        "weightage": "20",
+        "variance": "",
+        "score": "",
+        "monthlyAvg": "",
+        "annualAvg": "",
+        "mtd": "",
+        "ytd": "",
+        "ratio": ""
+      }
+    ]
+  }
+]

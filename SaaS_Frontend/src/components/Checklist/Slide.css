@@ -1,0 +1,13 @@
+.custom-carousel .alice-carousel {
+    width: 80% !important;
+    height: 40px !important;
+}
+
+.custom-carousel .alice-carousel__stage-item {
+    padding-left: 2px;
+}
+
+.custom-segmented .ant-segmented-item-selected {
+    background-color: rgb(110, 125, 171) !important; /* Active button background */
+    color: white !important; /* Active text color */
+  }

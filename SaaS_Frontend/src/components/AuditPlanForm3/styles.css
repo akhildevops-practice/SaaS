@@ -1,0 +1,12 @@
+/* .MuiCheckbox-colorPrimary {
+  color: transparent !important;
+} */
+.MuiCheckbox-colorPrimary:hover {
+  color: #0e0a4266 !important;
+}
+.Mui-checked {
+  color: #0e0a42 !important;
+}
+.Mui-checked:hover {
+  color: #0e0a42 !important;
+}

@@ -1,0 +1,12 @@
+export { default as auditRoutes } from "./auditRoutes";
+export { default as dashboardRoutes } from "./dashboardRoutes";
+export { default as documentRoutes } from "./documentRoutes";
+export { default as objectiveRoutes } from "./objectiveRoutes";
+export { default as kpiRoutes } from "./kpiRoutes";
+export { default as masterRoutes } from "./masterRoutes";
+export { default as otherRoutes } from "./otherRoutes";
+export { default as settingRoutes } from "./settingRoutes";
+export { default as reportRoutes } from "./graphsRoutes";
+export { default as riskRoutes } from "./riskRoutes";
+export { default as mrmRoutes } from "./mrmRoutes";
+export { default as cipRoutes } from "./cipRoutes";

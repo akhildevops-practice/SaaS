@@ -1,0 +1,15 @@
+export const expandMeetingSchema = {
+  period: "",
+  createdBy: "",
+  organizationId: "",
+  meetingSchedule: "",
+  locationId: "",
+  meetingName: "",
+  meetingdate: "",
+  meetingType: "",
+  venue: "",
+  participants: [],
+  minutesofMeeting: "",
+  attachments: [],
+  agenda: [],
+};

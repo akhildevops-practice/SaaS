@@ -1,0 +1,771 @@
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "rhel-openssl-1.0.x", "rhel-openssl-1.1.x"]
+  output        = "./generated/client1"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("MONGO_DB_URI1")
+}
+
+// Define the MonthYear scalar type resolver
+
+// Define the schema with the custom scalar type resolver
+model User {
+  id                       String                     @id @default(cuid()) @map("_id")
+  kcId                     String?
+  email                    String?
+  username                 String?
+  firstname                String?
+  lastname                 String?
+  createdAt                DateTime                   @default(now())
+  createdBy                String?
+  updatedAt                DateTime                   @updatedAt
+  updatedBy                String?
+  enabled                  Boolean?
+  organizationId           String?
+  locationId               String?
+  entityId                 String?
+  userType                 String?
+  status                   Boolean?
+  avatar                   String?
+  deleted                  Boolean?                   @default(false)
+  roleId                   String[]
+  functionId               Json?
+  secretId                 String?
+  signature                String?
+  entity                   Entity?                    @relation(fields: [entityId], references: [id])
+  location                 Location?                  @relation(fields: [locationId], references: [id])
+  organization             Organization?              @relation(fields: [organizationId], references: [id])
+  additionalUnits          String[]
+  AdditionalDocumentAdmins AdditionalDocumentAdmins[]
+  DocumentComments         DocumentComments[]
+  DocumentVersions         DocumentVersions[]
+  DocumentWorkFlowHistory  DocumentWorkFlowHistory[]
+  Logs                     Logs[]
+  Notification             Notification[]
+  documentAdmins           documentAdmins[]
+  userPersonalisation      userPersonalisation[]
+  auditTrial               auditTrial[]
+}
+
+model Models {
+  id             String       @id @default(auto()) @map("_id") @db.ObjectId
+  modelNo        String       @unique
+  modelName      String
+  description    String?
+  organizationId String
+  partsId        String[]     @db.ObjectId
+  claimId        String[]     @db.ObjectId
+  claims         Claim[]
+  organization   Organization @relation(fields: [organizationId], references: [id])
+  Parts          Parts[]      @relation(fields: [partsId], references: [id])
+}
+
+model Parts {
+  id             String        @id @default(auto()) @map("_id") @db.ObjectId
+  partNo         String        @unique
+  partName       String
+  description    String?
+  organizationId String?
+  entityId       String?
+  claimId        String[]      @db.ObjectId
+  claims         Claim[]
+  entity         Entity?       @relation(fields: [entityId], references: [id])
+  organization   Organization? @relation(fields: [organizationId], references: [id])
+  modelsId       String[]      @db.ObjectId
+  models         Models[]      @relation(fields: [modelsId], references: [id])
+}
+
+model Claim {
+  id              String          @id @default(cuid()) @map("_id")
+  partId          String?         @db.ObjectId
+  modelId         String?         @db.ObjectId
+  partRecieptDate String
+  vehicleType     String
+  FrameNo         String
+  prNo            String
+  lineOffDate     String
+  saleDate        String
+  repairDate      String
+  shipmentId      String?
+  investigationId String?
+  settleMonth     String?
+  kms             Int
+  problemId       String?
+  mis             Int
+  claimNo         Int             @unique
+  problem         Problem?        @relation(fields: [problemId], references: [id])
+  investigations  Investigation?  @relation(fields: [investigationId], references: [id])
+  models          Models?         @relation(fields: [modelId], references: [id])
+  parts           Parts?          @relation(fields: [partId], references: [id])
+  shipments       Shipment?       @relation(fields: [shipmentId], references: [id])
+  claimToEntity   ClaimToEntity[]
+}
+
+model Problem {
+  id             String          @id @default(cuid()) @map("_id")
+  problem        String
+  createdAt      String
+  organizationId String
+  investigations Investigation[]
+  claim          Claim[]
+  organization   Organization    @relation(fields: [organizationId], references: [id])
+}
+
+model ClaimToEntity {
+  id       String @id @default(cuid()) @map("_id")
+  claimId  String
+  entityId String
+  claim    Claim  @relation(fields: [claimId], references: [id])
+  entity   Entity @relation(fields: [entityId], references: [id])
+}
+
+model Investigation {
+  id             String   @id @default(cuid()) @map("_id")
+  // problemId      String
+  rootCause      String
+  counterMeasure String
+  leadTime       String
+  claimType      String
+  implementDate  String
+  attachment     Json[]
+  claimNo        Int
+  claims         Claim[]
+  //problem        Problem? @relation(fields: [problemId], references: [id])
+  Problem        Problem? @relation(fields: [problemId], references: [id])
+  problemId      String?
+}
+
+model Shipment {
+  id             String  @id @default(cuid()) @map("_id")
+  shipmentDate   String?
+  quantity       Int?
+  location       String?
+  InvoiceNumber  String?
+  dueDate        String?
+  shipmentCost   Int?
+  createdBy      String?
+  awb            String?
+  supplierName   String?
+  supplierReport Json[]
+  claims         Claim[]
+}
+
+model Organization {
+  id                    String   @id @default(cuid()) @map("_id")
+  kcId                  String?
+  organizationName      String?
+  realmName             String?
+  instanceUrl           String?
+  principalGeography    String?
+  digitalSignature      Boolean?
+  orgAdminTitle         String?
+  applicationAdminTitle String?
+
+  loginUrl            String?
+  logoutUrl           String?
+  createdAt           DateTime              @default(now())
+  createdBy           String?
+  updatedAt           DateTime              @updatedAt
+  updatedBy           String?
+  activeModules       String[]
+  clientID            String?
+  clientSecret        String?
+  fiscalYearQuarters  String?
+  fiscalYearFormat    String?
+  auditYear           String?
+  logoUrl             Bytes?
+  deleted             Boolean?              @default(false)
+  business            Business[]
+  Doctype             Doctype[]
+  Documents           Documents[]
+  entity              Entity[]
+  entityType          EntityType[]
+  location            Location[]
+  role                Role[]
+  section             Section[]
+  systemType          SystemType[]
+  user                User[]
+  userPersonalisation userPersonalisation[]
+  ConnectedApps       ConnectedApps[]
+  unitOfMeasurement   unitType[]
+  kpi                 kpi[]
+  businessType        businessType[]
+  prefixSuffix        prefixSuffix[]
+  serialNumber        serialNumber[]
+  function            Functions[]
+  rolesTable          rolesTable[]
+  problem             Problem[]
+  parts               Parts[]
+  Models              Models[]
+  aiConfig            Json?
+}
+
+// model UserRole {
+//   id     String  @id @default(cuid()) @map("_id")
+//   userId String?
+//   roleId String?
+//   role   Role?   @relation(fields: [roleId], references: [id])
+//   user   User?   @relation(fields: [userId], references: [id])
+// }
+
+model Role {
+  id             String        @id @default(cuid()) @map("_id")
+  kcId           String?       @unique
+  roleName       String?
+  createdAt      DateTime      @default(now())
+  createdBy      String?
+  updatedAt      DateTime      @updatedAt
+  updatedBy      String?
+  deleted        Boolean?      @default(false)
+  // locationId     String?
+  // location       Location?     @relation(fields: [locationId], references: [id])
+  organizationId String?
+  organization   Organization? @relation(fields: [organizationId], references: [id])
+  Location       Location?     @relation(fields: [locationId], references: [id])
+  locationId     String?
+}
+
+model SystemType {
+  id             String        @id @default(cuid()) @map("_id")
+  name           String?
+  createdAt      DateTime      @default(now())
+  createdBy      String?
+  updatedAt      DateTime      @updatedAt
+  color          String?       @default("yellow")
+  updatedBy      String?
+  deleted        Boolean?      @default(false)
+  organizationId String?
+  organization   Organization? @relation(fields: [organizationId], references: [id])
+}
+
+model EntityType {
+  id             String        @id @default(cuid()) @map("_id")
+  name           String?
+  createdAt      DateTime      @default(now())
+  createdBy      String?
+  updatedAt      DateTime      @updatedAt
+  updatedBy      String?
+  organizationId String?
+  default        Boolean?      @default(false)
+  deleted        Boolean?      @default(false)
+  organization   Organization? @relation(fields: [organizationId], references: [id])
+  entity         Entity[]
+}
+
+model businessType {
+  id             String        @id @default(cuid()) @map("_id")
+  name           String?
+  createdAt      DateTime      @default(now())
+  createdBy      String?
+  deleted        Boolean?      @default(false)
+  // businessId     Business[]
+  organizationId String?
+  organization   Organization? @relation(fields: [organizationId], references: [id])
+  //business Business? @relation(fields: [businessId],references: [id])
+}
+
+model Business {
+  id             String             @id @default(cuid()) @map("_id")
+  name           String?
+  createdAt      DateTime           @default(now())
+  createdBy      String?
+  updatedAt      DateTime           @updatedAt
+  updatedBy      String?
+  organizationId String?
+  deleted        Boolean?           @default(false)
+  organization   Organization?      @relation(fields: [organizationId], references: [id])
+  location       LocationBusiness[]
+  // user           User[]
+  // businessTypeId String?
+  // businesstype   businessType?      @relation(fields: [businessTypeId], references: [id])
+}
+
+model Functions {
+  id             String        @id @default(cuid()) @map("_id")
+  name           String?
+  functionId     String?
+  description    String?
+  functionHead   String[]
+  functionSpoc   String[]
+  createdAt      DateTime      @default(now())
+  createdBy      String?
+  updatedAt      DateTime      @updatedAt
+  updatedBy      String?
+  deleted        Boolean?      @default(false)
+  organizationId String?
+  type           Boolean       @default(false)
+  organization   Organization? @relation(fields: [organizationId], references: [id])
+  locationId     String[]
+  businessId     String[]
+  entity         Entity[]
+  unitId         String?
+}
+
+model Section {
+  id        String   @id @default(cuid()) @map("_id")
+  name      String?
+  createdAt DateTime @default(now())
+  createdBy String?
+  updatedAt DateTime @updatedAt
+  updatedBy String?
+
+  organizationId String?
+  organization   Organization? @relation(fields: [organizationId], references: [id])
+
+  deleted Boolean? @default(false)
+
+  // entity         EntitySections[]
+  // user           User[]
+}
+
+model Location {
+  id             String             @id @default(cuid()) @map("_id")
+  locationName   String?
+  locationType   String?
+  locationId     String?
+  description    String?
+  status         String?
+  createdBy      String?
+  createdAt      DateTime           @default(now())
+  updatedAt      DateTime           @updatedAt
+  updatedBy      String?
+  functionId     String[]
+  deleted        Boolean?           @default(false)
+  organizationId String?
+  organization   Organization?      @relation(fields: [organizationId], references: [id])
+  Documents      Documents[]
+  entity         Entity[]
+  business       LocationBusiness[]
+  user           User[]
+  users          Json[]
+  uom            unitType[]
+  rolesTable     rolesTable[]
+  // role           Role[]
+  businessTypeId String?
+  type           String?            @default("Unit")
+  Role           Role[]
+  logo           Bytes?
+}
+
+model Entity {
+  id           String  @id @default(cuid()) @map("_id")
+  entityName   String?
+  description  String?
+  entityTypeId String?
+
+  organizationId    String?
+  locationId        String?
+  createdBy         String?
+  entityId          String?
+  deleted           Boolean? @default(false)
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  updatedBy         String?
+  users             String[]
+  sections          String[]
+  auditees          String[]
+  additionalAuditee Json[]
+  notification      Json[]
+
+  parentId String? // New field to store the parent entity ID
+
+  hierarchyChain String[] // New field to store the hierarchy chain of ancestor IDs
+
+  parentEntityId Json?
+
+  familyId String[]
+
+  childId String[]
+
+  // business  Business?    @relation(fields: [businessId], references: [id])
+  entityType    EntityType?     @relation(fields: [entityTypeId], references: [id])
+  location      Location?       @relation(fields: [locationId], references: [id])
+  organization  Organization?   @relation(fields: [organizationId], references: [id])
+  Doctype       Doctype[]
+  Documents     Documents[]
+  //section        EntitySections[]
+  user          User[]
+  pic           String[]
+  manager       String?
+  parts         Parts[]
+  claimToEntity ClaimToEntity[]
+  functionId    String?
+  function      Functions?      @relation(fields: [functionId], references: [id])
+}
+
+// model EntitySections {
+//   id        String   @id @default(cuid()) @map("_id")
+//   entityId  String?
+//   sectionId String?
+//   entity    Entity?  @relation(fields: [entityId], references: [id])
+//   section   Section? @relation(fields: [sectionId], references: [id])
+// }
+
+model LocationBusiness {
+  id         String    @id @default(cuid()) @map("_id")
+  locationId String?
+  businessId String?
+  business   Business? @relation(fields: [businessId], references: [id])
+  location   Location? @relation(fields: [locationId], references: [id])
+}
+
+model Notification {
+  id       String   @id @default(cuid()) @map("_id")
+  type     String?
+  text     String
+  content  String
+  receiver String?
+  creator  String?
+  // deleted  Boolean? @default(false)
+  date     DateTime @default(now())
+  style    String?
+  read     Boolean  @default(false)
+  user     User?    @relation(fields: [receiver], references: [id])
+}
+
+model Doctype {
+  id                      String           @id @default(cuid()) @map("_id")
+  // location                Location?        @relation(fields: [locationId], references: [id])
+  locationId              String[]
+  documentTypeName        String?
+  documentNumbering       String?
+  reviewFrequency         Int?
+  revisionRemind          Int?             @default(30)
+  prefix                  String?
+  suffix                  String?
+  organization            Organization?    @relation(fields: [organizationId], references: [id])
+  organizationId          String?
+  readAccess              String?
+  readAccessUsers         Json[]
+  createdAt               DateTime         @default(now())
+  updatedAt               DateTime         @updatedAt
+  updatedBy               String?
+  createdBy               String?
+  Entity                  Entity?          @relation(fields: [entityId], references: [id])
+  applicable_systems      Json[]
+  users                   Json[]
+  document_classification String?
+  entityId                String?
+  whoCanCreate            String?
+  whoCanCreateUsers       Json[]
+  whoCanDownload          String?
+  whoCanDownloadUsers     Json[]
+  distributionUsers       Json[]
+
+  currentVersion          String
+  distributionList        String?
+  // deleted                 Boolean?         @default(false)
+  Documents               Documents[]
+  documentAdmins          documentAdmins[]
+
+  // @@unique([document_classification, locationId, applicable_systems], name: "docclassificationunique")
+  @@unique([documentTypeName, applicable_systems, document_classification, organizationId], name: "docUnique")
+}
+
+model Documents {
+  id                        String                      @id @default(cuid()) @map("_id")
+  doctype                   Doctype?                    @relation(fields: [doctypeId], references: [id])
+  doctypeId                 String?
+  organization              Organization?               @relation(fields: [organizationId], references: [id])
+  organizationId            String?
+  documentName              String?
+  documentNumbering         String?
+  reasonOfCreation          String?
+  effectiveDate             DateTime?
+  nextRevisionDate          DateTime?
+  currentVersion            String?
+  documentLink              String?
+  description               String?
+  tags                      String[]
+  // deleted           Boolean?      @default(false)
+  documentState             String?
+  creatorLocation           Location?                   @relation(fields: [locationId], references: [id])
+  locationId                String
+  creatorEntity             Entity?                     @relation(fields: [entityId], references: [id])
+  entityId                  String?
+  system                    String[]
+  section                   String?
+  revertComment             String?
+  docType                   String?
+  documentClassification    String?
+  issueNumber               String?
+  retireComment             String?
+  revisionReminderFlag      Boolean?
+  isVersion                 Boolean?
+  ReferenceDocuments        ReferenceDocuments[]
+  DocumentVersions          DocumentVersions[]
+  DocumentComments          DocumentComments[]
+  DocumentWorkFlowHistory   DocumentWorkFlowHistory[]
+  AdditionalDocumentAdmins  AdditionalDocumentAdmins[]
+  createdAt                 DateTime                    @default(now())
+  updatedAt                 DateTime                    @updatedAt
+  approvedDate              DateTime?
+  countNumber               Int?
+  createdBy                 String?
+  distributionList          String?
+  documentId                String?
+  reviewers                 String[]
+  approvers                 String[]
+  creators                  String[]
+  distributionUsers         Json[]
+  readAccess                String?
+  readAccessUsers           Json[]
+  VersionReferenceDocuments VersionReferenceDocuments[]
+  versionInfo               Json[]
+}
+
+model documentAttachmentHistory {
+  id          String   @id @default(cuid()) @map("_id")
+  documentId  String?
+  updatedLink String?
+  updatedBy   String?
+  updatedAt   DateTime @updatedAt
+}
+
+model ReferenceDocuments {
+  id                 String            @id @default(cuid()) @map("_id")
+  documentLink       String?
+  type               String?
+  documentName       String?
+  version            String?
+  documentId         String?
+  createdAt          DateTime          @default(now())
+  updatedAt          DateTime          @updatedAt
+  referenceDocId     String?
+  versionId          String?
+  document           Documents?        @relation(fields: [documentId], references: [id])
+  versionsLinkedWith DocumentVersions? @relation(fields: [versionId], references: [id])
+}
+
+model VersionReferenceDocuments {
+  id                 String            @id @default(cuid()) @map("_id")
+  documentLink       String?
+  type               String?
+  documentName       String?
+  version            String?
+  createdAt          DateTime          @default(now())
+  updatedAt          DateTime          @updatedAt
+  referenceDocId     String?
+  versionId          String?
+  documentsId        String?
+  Documents          Documents?        @relation(fields: [documentsId], references: [id])
+  versionsLinkedWith DocumentVersions? @relation(fields: [versionId], references: [id])
+}
+
+model DocumentVersions {
+  id                        String                      @id @default(cuid()) @map("_id")
+  versionName               String
+  userId                    String?
+  by                        String?
+  approvedDate              DateTime?
+  versionLink               String
+  documentId                String?
+  createdAt                 DateTime                    @default(now())
+  updatedAt                 DateTime                    @updatedAt
+  documentName              String?
+  documentNumbering         String?
+  reasonOfCreation          String?
+  effectiveDate             DateTime?
+  description               String?
+  issueNumber               String?
+  document                  Documents?                  @relation(fields: [documentId], references: [id])
+  user                      User?                       @relation(fields: [userId], references: [id])
+  ReferenceDocuments        ReferenceDocuments[]
+  VersionReferenceDocuments VersionReferenceDocuments[]
+}
+
+model DocumentComments {
+  id          String     @id @default(cuid()) @map("_id")
+  userId      String?
+  commentBy   String?
+  commentText String
+  documentId  String?
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  document    Documents? @relation(fields: [documentId], references: [id])
+  user        User?      @relation(fields: [userId], references: [id])
+}
+
+model DocumentWorkFlowHistory {
+  id         String     @id @default(cuid()) @map("_id")
+  actionName String
+  userId     String?
+  actionBy   String?
+  documentId String?
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+  document   Documents? @relation(fields: [documentId], references: [id])
+  user       User?      @relation(fields: [userId], references: [id])
+}
+
+model documentAdmins {
+  id        String   @id @default(cuid()) @map("_id")
+  type      String
+  firstname String
+  lastname  String
+  email     String
+  userId    String
+  doctypeId String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  doctype   Doctype? @relation(fields: [doctypeId], references: [id])
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model AdditionalDocumentAdmins {
+  id         String     @id @default(cuid()) @map("_id")
+  type       String
+  firstname  String
+  lastname   String
+  email      String
+  userId     String
+  documentId String?
+  // deleted    Boolean?   @default(false)
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+  document   Documents? @relation(fields: [documentId], references: [id])
+  user       User       @relation(fields: [userId], references: [id])
+}
+
+model Logs {
+  id                String @id @default(cuid()) @map("_id")
+  userId            String
+  action            String
+  resource          String
+  type              String
+  additionalDetails Json
+  user              User   @relation(fields: [userId], references: [id])
+}
+
+model userPersonalisation {
+  id             String        @id @default(cuid()) @map("_id")
+  userId         String
+  organizationId String?
+  targetObject   String
+  targetObjectId String[]
+  Organization   Organization? @relation(fields: [organizationId], references: [id])
+  user           User          @relation(fields: [userId], references: [id])
+
+  @@unique([userId, targetObject])
+}
+
+model ConnectedApps {
+  id                String        @id @default(cuid()) @map("_id")
+  sourceName        String
+  clientId          String        @unique
+  clientSecret      String        @unique
+  baseURL           String
+  user              String?
+  password          String?
+  redirectURL       String?
+  grantType         String?
+  description       String
+  deleted           Boolean?      @default(false)
+  organization      Organization? @relation(fields: [organizationId], references: [id])
+  organizationId    String?
+  createdModifiedBy String
+  createdModifiedAt DateTime      @default(now())
+  // location          Location[]?  @relation(references: [id])
+  locationId        String[]
+  Status            Boolean
+  uom               unitType[]
+  kpi               kpi[]
+
+  @@unique([organizationId, sourceName])
+}
+
+model unitType {
+  id                String         @id @default(cuid()) @map("_id")
+  unitType          String
+  unitOfMeasurement String[]
+  kpi               kpi[]
+  organization      Organization?  @relation(fields: [organizationId], references: [id])
+  organizationId    String?
+  location          Location?      @relation(fields: [locationId], references: [id])
+  locationId        String?
+  deleted           Boolean?       @default(false)
+  createdModifiedBy String
+  createdModifiedAt DateTime       @default(now())
+  ConnectedApps     ConnectedApps? @relation(fields: [connectedAppsId], references: [id])
+  connectedAppsId   String?
+
+  @@unique([organizationId, unitType])
+}
+
+model kpi {
+  id                String         @id @default(cuid()) @map("_id")
+  kpiName           String         @unique
+  kpiType           String?
+  keyFields         String[]
+  unitType          unitType?      @relation(fields: [unitTypeId], references: [id])
+  unitTypeId        String?
+  uom               String
+  ConnectedApps     ConnectedApps? @relation(fields: [sourceId], references: [id])
+  sourceId          String?
+  status            Boolean
+  apiEndPoint       String?
+  kpiDescription    String?
+  kpiTargetType     Boolean?
+  // deleted           Boolean?       @default(false)
+  organization      Organization?  @relation(fields: [organizationId], references: [id])
+  organizationId    String?
+  // location       Location?     @relation(fields: [locationId], references: [id])
+  locationId        String[]
+  createdModifiedBy String
+  createdModifiedAt DateTime       @default(now())
+}
+
+model auditTrial {
+  id            String    @id @default(cuid()) @map("_id")
+  moduleType    String?
+  actionType    String?
+  transactionId String?
+  user          User?     @relation(fields: [actionBy], references: [id])
+  actionBy      String?
+  actionDate    DateTime? @default(now())
+  // deleted       Boolean?  @default(false)
+}
+
+model prefixSuffix {
+  id             String        @id @default(cuid()) @map("_id")
+  prefix         String?
+  suffix         String?
+  moduleType     String?
+  location       String?
+  // deleted        Boolean?      @default(false)
+  organizationId String?
+  organization   Organization? @relation(fields: [organizationId], references: [id])
+  createdBy      String?
+  createdAt      DateTime      @default(now())
+}
+
+model serialNumber {
+  id             String        @id @default(cuid()) @map("_id")
+  moduleType     String?
+  location       String?
+  entity         String?
+  year           String?
+  tid            String?
+  serialNumber   Int           @default(0001)
+  createdBy      String?
+  createdAt      DateTime      @default(now())
+  organizationId String?
+  organization   Organization? @relation(fields: [organizationId], references: [id])
+
+  @@unique([moduleType, location, entity, year, tid])
+}
+
+model rolesTable {
+  id           String       @id @default(cuid()) @map("_id")
+  orgId        String
+  organization Organization @relation(fields: [orgId], references: [id])
+  unitId       String
+  location     Location     @relation(fields: [unitId], references: [id])
+  users        String[]
+  roleId       String[]
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+}

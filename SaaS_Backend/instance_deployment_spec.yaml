@@ -1,0 +1,75 @@
+version: 1.0
+component: deployment
+runAs: root
+shell: bash
+
+files:
+  - source: /
+    destination: /tmp/
+
+steps:
+  - stepType: Command
+    name: Check OCI CLI and Install
+    command: |
+      cd ~
+      if command -v oci &> /dev/null
+      then
+        echo "OCI CLI is already installed: $(oci --version)"
+      else
+        echo "OCI CLI not found. Installing..."
+        sudo yum install -y python36-oci-cli
+      fi
+    timeoutInSeconds: 5000
+    shell: bash
+    onFailure:
+      - stepType: Command
+        name: "Failure Handling"
+        timeoutInSeconds: 1200
+        command: |
+          echo "Handled failure"
+
+  - stepType: Command
+    name: "Download artifact from artifact registry"
+    command: | 
+      cd /tmp/
+      export PATH=/usr/bin:$PATH
+      export OCI_CLI_AUTH=instance_principal
+
+      #✅ Check if build_version is available
+      echo "Checking build_version: '${build_version}'"
+
+      #✅ Proceed with Deployment
+      oci artifacts generic artifact download-by-path \
+      --repository-id ${ARTIFACT_REPO_OCID} \
+      --artifact-path ${ARTIFACT_NAME} \
+      --artifact-version ${build_version} \
+      --file backend.tar.gz
+      
+      #Clean Existing Build
+      sudo -u opc bash -c 'pm2 delete backend || echo "Skipping PM2 Deleted No Process Found"'
+      sudo rm -rf /home/opc/prodle/backend || echo "No Directory Found"
+      sudo mkdir -p /home/opc/prodle/backend
+      sudo tar -xf backend.tar.gz -C /home/opc/prodle/backend
+
+    timeoutInSeconds: 5000
+    shell: bash
+    onFailure:
+      - stepType: Command
+        name: "Failure Handling"
+        timeoutInSeconds: 1200
+        command: |
+          echo "Handled failure"
+
+  - stepType: Command
+    name: "Start Backend Build"
+    command: | 
+      sudo chown -R opc:opc /home/opc/prodle/backend
+      sudo -u opc bash -c 'cd /home/opc/prodle/backend && pm2 start dist/src/main.js --name backend'
+
+    shell: bash
+    onFailure:
+      - stepType: Command
+        name: "Failure Handling"
+        timeoutInSeconds: 1200
+        command: |
+          echo "Handled failure"

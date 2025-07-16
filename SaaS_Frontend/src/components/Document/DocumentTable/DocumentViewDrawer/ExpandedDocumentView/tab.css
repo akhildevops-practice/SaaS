@@ -1,0 +1,12 @@
+.multi-line-tabs .ant-tabs-nav {
+  flex-wrap: wrap;
+}
+
+.multi-line-tabs .ant-tabs-nav::before {
+  display: none;
+}
+
+.multi-line-tabs .ant-tabs-tab {
+  white-space: normal;
+  height: auto;
+}

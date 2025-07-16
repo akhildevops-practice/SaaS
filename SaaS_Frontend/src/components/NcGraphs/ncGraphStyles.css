@@ -1,0 +1,30 @@
+.ncpiegraph {
+  width: 95% !important;
+  height: 188px !important;
+
+  /* width: 100% !important; */
+  /* height: 100% !important; */
+
+  margin: auto;
+  position: relative;
+  top : 5px;
+  /* bottom: 32px; */
+}
+
+.ncstackbargraph {
+  height: 200px !important;
+  width: 86% !important;
+  margin: auto;
+}
+
+.ncageanalysisgraph {
+     height: 195px !important;
+  width: 340px !important;
+  /* margin: auto; */
+  margin-left: 10px;
+}
+
+.graphBox {
+  width: 100%;
+  height: 100%;
+}

@@ -1,0 +1,64 @@
+def url
+def remote_host_ip
+def remote_path
+def remote_host
+def credentials_id
+def user
+def password
+
+pipeline {
+    agent any
+    environment {
+        ENV = 'Development'
+    }
+    stages {
+        stage('Getting Destination Server Info') {
+            steps {
+                script {
+
+                    def envConfig = readJSON file: "${WORKSPACE}/env-config.json"
+                    url = envConfig[ENV]['url']
+                    remote_path = envConfig[ENV]['remote_path']
+                    remote_host_ip = envConfig[ENV]['remote_host_ip']
+                    remote_host = envConfig[ENV]['remote_host']
+                    credentials_id = envConfig[ENV]['credentials_id'] 
+
+                    //Assiging UserName and Password of Remote Host to Variable
+                    withCredentials([usernamePassword(credentialsId: "${credentials_id}", usernameVariable: 'remote_user', passwordVariable: 'remote_password')]) {
+                        user = "${remote_user}"
+                        password = "${remote_password}"
+                        echo "Passing the username and password" 
+                    }
+                }
+            }
+        }
+        stage('Copying Workspace to Destination Server') {
+            steps {
+                script {
+                    def remote = [:]
+                    remote.name = "${remote_host}"
+                    remote.host = "${remote_host_ip}"
+                    remote.allowAnyHosts = true
+                    remote.user = "${user}"
+                    remote.password = "${password}"
+                    sshCommand remote: remote, command: "rm -rf ${remote_path}/ProdleAI || true"
+                    // sleep 10 //wait for 10 seconds
+                    // sshCommand remote: remote, command: "mv ${remote_path}/ProdleAI aibackup"
+                    sshCommand remote: remote, command: "pm2 delete watcher query || true"
+                    sshPut remote: remote, from: "${WORKSPACE}", into: "${remote_path}"
+                    sshCommand remote: remote, command: "cp -r ${remote_path}/.env ${remote_path}/ProdleAI"
+                    // sshCommand remote: remote, command: "cd /home/pcloud/example3/bin && ls -l && source activate"
+                    sshCommand remote: remote, command: "cd ${remote_path}/ProdleAI && chmod +x *.sh"
+                    sshCommand remote: remote, command: "cd ${remote_path}/ProdleAI && pm2 start --name watcher watcher.sh && pm2 start --name query query.sh"
+                    sshCommand remote: remote, command: "pm2 reload celery"
+
+                }
+            }
+        }
+    }
+    post {
+        always {
+            cleanWs()
+        }
+    }
+}
